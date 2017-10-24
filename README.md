@@ -1,24 +1,12 @@
-# README
+# Introduction
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Simple white board application using actioncable
 
-Things you may want to cover:
+    bundle install
 
-* Ruby version
+    rails s
 
-* System dependencies
+Open http://localhost:3000?admin=true in one browser and http://localhost:3000 in another browser. Whatever you draw in the first browser will be replicated in the latter. Check the gif.
 
-* Configuration
+![Screenshot](whiteboard.gif?raw=true)
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

@@ -3,61 +3,59 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $(document).on 'turbolinks:load', ->
-  console.log 'Ready to rock and load'
 
-  whiteboard = $('#whiteboard')
-  context = whiteboard[0].getContext('2d')
+  whiteboard = $('.whiteboard.admin')
 
-  clickX = []
-  clickY = []
-  clickDrag = []
-  drawing = false
+  if whiteboard.is(':visible')
+    context = whiteboard[0].getContext('2d')
 
-  addClick = (x, y, dragging) ->
-    clickX.push x
-    clickY.push y
-    clickDrag.push dragging
+    clickX = []
+    clickY = []
+    clickDrag = []
+    drawing = false
 
-  redraw = ->
-    context.clearRect 0, 0, context.canvas.width, context.canvas.height
-    context.strokeStyle = '#df4b26'
-    context.lineJoin = 'round'
-    context.lineWidth = 1
-    for i in [0..clickX.length]
-      context.beginPath()
-      if clickDrag[i] && i
-        context.moveTo clickX[i - 1], clickY[i - 1]
-      else
-        context.moveTo clickX[i] - 1, clickY[i]
-      context.lineTo clickX[i], clickY[i]
-      console.log clickX[i]
-      console.log clickX[i - 1]
-      console.log clickY[i]
-      console.log clickY[i - 1]
-      context.closePath()
-      context.stroke()
+    addClick = (x, y, dragging) ->
+      clickX.push x
+      clickY.push y
+      clickDrag.push dragging
 
-  whiteboard.mousedown (e) ->
-    mouseX = e.pageX - @offsetLeft
-    mouseY = e.pageY - @offsetTop
-    drawing = true
-    addClick mouseX, mouseY, false
-    redraw()
+    redraw = ->
+      context.clearRect 0, 0, context.canvas.width, context.canvas.height
+      context.strokeStyle = '#df4b26'
+      context.lineJoin = 'round'
+      context.lineWidth = 1
+      for i in [0..clickX.length]
+        context.beginPath()
+        if clickDrag[i] && i
+          context.moveTo clickX[i - 1], clickY[i - 1]
+        else
+          context.moveTo clickX[i] - 1, clickY[i]
+        context.lineTo clickX[i], clickY[i]
+        context.closePath()
+        context.stroke()
 
-  whiteboard.mousemove (e) ->
-    if drawing
-      console.log 'Move'
+    whiteboard.mousedown (e) ->
       mouseX = e.pageX - @offsetLeft
       mouseY = e.pageY - @offsetTop
-
       drawing = true
-      addClick mouseX, mouseY, true
+      addClick mouseX, mouseY, false
+      App.broadcast.send_message x: mouseX, y: mouseY, dragging: false
       redraw()
 
-  whiteboard.mouseup ->
-    drawing = false
+    whiteboard.mousemove (e) ->
+      if drawing
+        mouseX = e.pageX - @offsetLeft
+        mouseY = e.pageY - @offsetTop
 
-  whiteboard.mouseleave ->
-    drawing = false
+        drawing = true
+        addClick mouseX, mouseY, true
+        App.broadcast.send_message x: mouseX, y: mouseY, dragging: true
+        redraw()
+
+    whiteboard.mouseup ->
+      drawing = false
+
+    whiteboard.mouseleave ->
+      drawing = false
 
 

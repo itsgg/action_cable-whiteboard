@@ -4,5 +4,7 @@ redis: &redis
   channel_prefix: action_cable
 
 production: *redis
-development: *redis
-test: *redis
+development:
+  adapter: async
+test:
+  adapter: async
